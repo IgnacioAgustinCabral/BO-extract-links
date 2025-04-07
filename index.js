@@ -27,6 +27,7 @@ app.get('/extract-links', async (req, res) => {
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         const data = await page.evaluate(() => `<html>${document.documentElement.innerHTML}</html>`);
+	await page.close();
         await browser.close();
         res.send(data);
 
