@@ -16,14 +16,6 @@ app.get('/extract-links', async (req, res) => {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
         await page.goto(url);
-
-        if (sources_id === '628') {
-            await page.waitForSelector('vaadin-grid-cell-content');
-            await page.evaluate(() => {
-                const element = document.querySelector('vaadin-grid-cell-content');
-                if (element) element.click();
-            });
-        }
         await new Promise(resolve => setTimeout(resolve, 5000));
 
         const data = await page.evaluate(() => `<html>${document.documentElement.innerHTML}</html>`);
