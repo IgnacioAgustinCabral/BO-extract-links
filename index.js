@@ -66,17 +66,25 @@ app.get('/extract-links', async (req, res) => {
             } else {
                 console.log('No se encontró texto que matchee');
             }
+            await new Promise(resolve => setTimeout(resolve, 10000));
+
+            const data = await page.evaluate(() => `<html>${document.documentElement.innerHTML}</html>`);
+            const linkRegex = /https?:\/\/www.comodoro.gov.ar\/archivos\/boletin_oficial\/pdf\/BOL[\s\S]*?\.pdf/;
+            const link = data.match(linkRegex);
+            await page.close();
+            await browser.close();
+            res.set('Content-Type', 'text/plain');
+            res.send("href=" + link);
         } else {
             await page.goto(url);
+            await new Promise(resolve => setTimeout(resolve, 10000));
+
+            const data = await page.evaluate(() => `<html>${document.documentElement.innerHTML}</html>`);
+            await page.close();
+            await browser.close();
+            res.set('Content-Type', 'text/plain');
+            res.send(data);
         }
-
-        await new Promise(resolve => setTimeout(resolve, 10000));
-
-        const data = await page.evaluate(() => `<html>${document.documentElement.innerHTML}</html>`);
-        await page.close();
-        await browser.close();
-
-        res.send(data);
 
     } catch (err) {
         console.error(err);
